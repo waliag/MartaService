@@ -37,7 +37,6 @@ namespace MartaService
 
                             DateTime northbound = Convert.ToDateTime(Convert.ToString(reader["NorthBound"]));
                             DateTime southbound = Convert.ToDateTime(Convert.ToString(reader["SouthBound"]));
-                            //string southbound = Convert.ToString(reader["SouthBound"]);
                             if ((DateTime.Compare(northbound, currentTime) > 0) &&
                                 (DateTime.Compare(southbound, currentTime) > 0))
                             {
