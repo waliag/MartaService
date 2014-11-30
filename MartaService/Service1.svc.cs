@@ -13,20 +13,21 @@ namespace MartaService
     public class Service1 : IService1
     {
 
-        public SandySpringsSchedule GetSandySpingsSchedule()
+        public TrainSchedule GetTrainSchedule(string stationName)
         {
-            SandySpringsSchedule scheduleObj = new SandySpringsSchedule();       
+            TrainSchedule scheduleObj = new TrainSchedule();       
             DBAccess objDBAccess = new DBAccess();
-            scheduleObj = objDBAccess.getSandySpringsSchedule();
+            scheduleObj = objDBAccess.getTrainSchedule(stationName);
             return scheduleObj;
         }
+        /*
         public FivePointsSchedule GetFivePointsSchedule()
         {
             FivePointsSchedule scheduleObj = new FivePointsSchedule();
             DBAccess objDBAccess = new DBAccess();
             scheduleObj = objDBAccess.getFivePointsSchedule();
             return scheduleObj;
-        }
+        }*/
 
     }
    

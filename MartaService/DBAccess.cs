@@ -14,6 +14,7 @@ namespace MartaService
         static string connectionString = ConfigurationManager.ConnectionStrings["TestConnection"].ConnectionString;
         SqlConnection connection = new SqlConnection(connectionString);
 
+        /*
         public SandySpringsSchedule getSandySpringsSchedule()
         {
             SandySpringsSchedule timeObj;
@@ -42,6 +43,7 @@ namespace MartaService
                             {
                                 timeObj.northBound = Convert.ToString(reader["NorthBound"]);
                                 timeObj.southBound = Convert.ToString(reader["SouthBound"]);
+                                break;
                             }
                             
                         }
@@ -55,16 +57,30 @@ namespace MartaService
             }
             connection.Close();
             return timeObj;
-        }
-        public FivePointsSchedule getFivePointsSchedule()
+        }*/
+        public TrainSchedule getTrainSchedule(string stationName)
         {
-            FivePointsSchedule timeObj;
-            timeObj = new FivePointsSchedule();
+            TrainSchedule timeObj;
+            timeObj = new TrainSchedule();
 
-            string sql = "sp_getFivePointsSchedule";
-            SqlCommand command = new SqlCommand(sql, connection);
+            string sqlNorthBound;
+            string sqlSouthBound;
+            if (stationName == "FivePoints")
+            {
+                sqlNorthBound = "sp_getFivePointsNorthBoundSchedule";
+                sqlSouthBound = "sp_getFivePointsSouthBoundSchedule";
+            }
+            else
+            {
+                sqlNorthBound = "sp_getSandySpringsNorthBoundSchedule";
+                sqlSouthBound = "sp_getSandySpringsSouthBoundSchedule";
+            }
+
+            DateTime currentTime = DateTime.Now;
+
+            //Execute query for northbound data
+            SqlCommand command = new SqlCommand(sqlNorthBound, connection);
             command.CommandType = CommandType.StoredProcedure;
-
             try
             {
                 connection.Open();
@@ -72,22 +88,26 @@ namespace MartaService
                 {
                     if (reader.HasRows)
                     {
-                        DateTime currentTime = DateTime.Now;
+                        reader.Read();
+                        DateTime firstNorthBoundTrain = Convert.ToDateTime(Convert.ToString(reader["NorthBound"]));
 
-                        while (reader.Read())
+                        do
                         {
-
                             DateTime northbound = Convert.ToDateTime(Convert.ToString(reader["NorthBound"]));
-                            DateTime southbound = Convert.ToDateTime(Convert.ToString(reader["SouthBound"]));
-                            //string southbound = Convert.ToString(reader["SouthBound"]);
-                            if ((DateTime.Compare(northbound, currentTime) > 0) &&
-                                (DateTime.Compare(southbound, currentTime) > 0))
+                                                 
+                            if (DateTime.Compare(northbound, currentTime) > 0)
                             {
-                                timeObj.northBound = Convert.ToString(reader["NorthBound"]);
-                                timeObj.southBound = Convert.ToString(reader["SouthBound"]);
+                                timeObj.northBound = northbound.ToString("hh:mm:ss tt");
+                                break;
                             }
 
+                        } while (reader.Read());
+
+                        if(timeObj.northBound == null)
+                        {
+                            timeObj.northBound = firstNorthBoundTrain.ToString("hh:mm:ss tt");
                         }
+                       
                     }
                 }
 
@@ -97,6 +117,48 @@ namespace MartaService
                 Console.WriteLine(ex.Message);
             }
             connection.Close();
+
+            //Execute query for southbound data
+            command = new SqlCommand(sqlSouthBound, connection);
+            command.CommandType = CommandType.StoredProcedure;
+
+            try
+            {
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        reader.Read();
+                       DateTime firstSouthBoundTrain = Convert.ToDateTime(Convert.ToString(reader["SouthBound"]));
+
+                        do
+                        {
+                            DateTime southbound = Convert.ToDateTime(Convert.ToString(reader["SouthBound"]));
+
+                            if (DateTime.Compare(southbound, currentTime) > 0)
+                            {
+                                timeObj.southBound = southbound.ToString("hh:mm:ss tt");
+                                break;
+                            }
+
+                        } while (reader.Read());
+
+                        if (timeObj.southBound == null)
+                        {
+                            timeObj.southBound = firstSouthBoundTrain.ToString("hh:mm:ss tt");
+                        }
+
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            connection.Close();
+
             return timeObj;
         }
     }

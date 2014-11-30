@@ -13,20 +13,20 @@ namespace MartaService
     public interface IService1
     {
 
-        [WebGet(ResponseFormat = WebMessageFormat.Json, UriTemplate = "SandySprings")]
+        [WebGet(ResponseFormat = WebMessageFormat.Json, UriTemplate = "{stationName}")]
         [OperationContract]
-        SandySpringsSchedule GetSandySpingsSchedule();
+        TrainSchedule GetTrainSchedule(string stationName);
 
-        [WebGet(ResponseFormat = WebMessageFormat.Json, UriTemplate = "FivePoints")]
-        [OperationContract]
-        FivePointsSchedule GetFivePointsSchedule();
+       // [WebGet(ResponseFormat = WebMessageFormat.Json, UriTemplate = "FivePoints")]
+        //[OperationContract]
+        //FivePointsSchedule GetFivePointsSchedule(string );
 
         // TODO: Add your service operations here
     }
 
 
     [DataContract]
-    public class SandySpringsSchedule
+    public class TrainSchedule
     {
         [DataMember]
         public string northBound { get; set; }
@@ -34,6 +34,7 @@ namespace MartaService
         [DataMember]
         public string southBound { get; set; }
     }
+    /*
 
     public class FivePointsSchedule
     {
@@ -42,5 +43,5 @@ namespace MartaService
 
         [DataMember]
         public string southBound { get; set; }
-    }
+    }*/
 }
