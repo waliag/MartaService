@@ -16,12 +16,6 @@ namespace MartaService
         [WebGet(ResponseFormat = WebMessageFormat.Json, UriTemplate = "{stationName}")]
         [OperationContract]
         TrainSchedule GetTrainSchedule(string stationName);
-
-       // [WebGet(ResponseFormat = WebMessageFormat.Json, UriTemplate = "FivePoints")]
-        //[OperationContract]
-        //FivePointsSchedule GetFivePointsSchedule(string );
-
-        // TODO: Add your service operations here
     }
 
 
@@ -34,14 +28,5 @@ namespace MartaService
         [DataMember]
         public string southBound { get; set; }
     }
-    /*
-
-    public class FivePointsSchedule
-    {
-        [DataMember]
-        public string northBound { get; set; }
-
-        [DataMember]
-        public string southBound { get; set; }
-    }*/
+   
 }

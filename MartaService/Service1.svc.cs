@@ -20,15 +20,7 @@ namespace MartaService
             scheduleObj = objDBAccess.getTrainSchedule(stationName);
             return scheduleObj;
         }
-        /*
-        public FivePointsSchedule GetFivePointsSchedule()
-        {
-            FivePointsSchedule scheduleObj = new FivePointsSchedule();
-            DBAccess objDBAccess = new DBAccess();
-            scheduleObj = objDBAccess.getFivePointsSchedule();
-            return scheduleObj;
-        }*/
-
+        
     }
    
 }
